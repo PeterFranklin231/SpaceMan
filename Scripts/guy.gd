@@ -12,9 +12,14 @@ extends Node2D
 @onready var right_uarm := $"right Uarm"
 @onready var left_thigh := $"left thigh"
 @onready var right_thigh := $"right thigh"
+@onready var peenie := $Peenie
 
 func _ready() -> void:
 	right_hand.get_node("Sprite2D").flip_h = true
+	peenie.get_node("Sprite2D").scale = Vector2(0.32,0.32)
+	peenie.get_node("Sprite2D").position = Vector2(0,2)
+	peenie.get_node("CollisionPolygon2D").scale = Vector2(0.15,0.15)
+	peenie.get_node("CollisionPolygon2D").position = Vector2(0,3)
 
 func _physics_process(delta: float) -> void:
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
@@ -45,7 +50,7 @@ func _physics_process(delta: float) -> void:
 	_enforce_angular_limit(left_thigh, left_foot, deg_to_rad(-145), deg_to_rad(0), 18000.0)
 	_enforce_angular_limit(right_thigh, right_foot, deg_to_rad(0), deg_to_rad(145), 18000.0)
 	_enforce_angular_limit(left_uarm, left_hand, deg_to_rad(-145), deg_to_rad(10), 18000.0)
-	_enforce_angular_limit(right_uarm, right_hand, deg_to_rad(10), deg_to_rad(145), 18000.0)
+	_enforce_angular_limit(right_uarm, right_hand, deg_to_rad(0), deg_to_rad(145), 18000.0)
 
 
 	queue_redraw()
@@ -108,6 +113,7 @@ func _apply_paired_force(part: RigidBody2D, target_pos: Vector2) -> void:
 		var other_force = -damped_force * 0.1
 		other.apply_force(other_force, other_offset)
 		other.apply_torque(other_offset.cross(other_force))
+
 
 func _spread_and_ball(push_away: bool) -> void:
 	var limbs = [left_hand, right_hand, left_foot, right_foot]

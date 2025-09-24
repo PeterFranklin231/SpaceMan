@@ -58,6 +58,19 @@ softness = 4.0
 position = Vector2(0, 1)
 mass = 1.6
 
+[node name="Peenie" parent="Guy" instance=ExtResource("1_x81v5")]
+position = Vector2(0, 29)
+rotation = -0.000410384
+scale = Vector2(0.2, 0.2)
+collision_layer = 8
+collision_mask = 9
+mass = 0.01
+
+[node name="PinJoint2D" type="PinJoint2D" parent="Guy/Peenie"]
+node_a = NodePath("../../torso")
+node_b = NodePath("..")
+softness = 4.0
+
 [node name="head" parent="Guy" instance=ExtResource("3_jihn4")]
 position = Vector2(0, -24)
 
@@ -189,6 +202,7 @@ target_body = NodePath("../Guy/torso")
 
 [node name="straight segment" parent="." instance=ExtResource("8_wcred")]
 position = Vector2(526, 283)
+mass = 300.0
 
 [node name="PinJoint2D" type="PinJoint2D" parent="straight segment"]
 position = Vector2(121, 0)
@@ -198,3 +212,4 @@ disable_collision = false
 
 [node name="straight segment2" parent="." instance=ExtResource("8_wcred")]
 position = Vector2(768, 283)
+mass = 300.0
