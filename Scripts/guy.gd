@@ -1,6 +1,6 @@
 extends Node2D
 
-@export var force_strength: float = 500.0
+@export var force_strength: float = 60.0
 
 @onready var torso := $torso
 @onready var left_foot := $"left foot"
@@ -44,8 +44,8 @@ func _physics_process(delta: float) -> void:
 	_enforce_angular_limit(torso, right_thigh, deg_to_rad(-120), deg_to_rad(10), 18000.0)
 	_enforce_angular_limit(left_thigh, left_foot, deg_to_rad(-145), deg_to_rad(0), 18000.0)
 	_enforce_angular_limit(right_thigh, right_foot, deg_to_rad(0), deg_to_rad(145), 18000.0)
-	_enforce_angular_limit(left_uarm, left_hand, deg_to_rad(-145), deg_to_rad(0), 18000.0)
-	_enforce_angular_limit(right_uarm, right_hand, deg_to_rad(0), deg_to_rad(145), 18000.0)
+	_enforce_angular_limit(left_uarm, left_hand, deg_to_rad(-145), deg_to_rad(10), 18000.0)
+	_enforce_angular_limit(right_uarm, right_hand, deg_to_rad(10), deg_to_rad(145), 18000.0)
 
 
 	queue_redraw()
@@ -87,20 +87,27 @@ func _apply_paired_force(part: RigidBody2D, target_pos: Vector2) -> void:
 
 	var offset = global_offset_pos - part.global_position
 
-	# Apply force to the limb
+	# Apply force to the selected limb
 	part.apply_force(damped_force, offset)
+	part.apply_torque(offset.cross(damped_force))
 
-	# Apply equal and opposite force to the torso at the same relative point
-	var torso_offset = global_offset_pos - torso.global_position
-	torso.apply_force(-damped_force, torso_offset)
+	# Distribute reaction force
+	var all_limbs = [left_hand, right_hand, left_foot, right_foot]
+	var other_limbs = all_limbs.filter(func(limb): return limb != part)
 
-	# Apply torques to account for rotational effect
-	var limb_torque = offset.cross(damped_force)
-	part.apply_torque(offset.cross(damped_force))  # Optional — if you want the limb to rotate
-	torso.apply_torque(torso_offset.cross(-damped_force))
+	# Apply to torso
+	var torso_offset = torso.to_global(local_offset) - torso.global_position
+	var torso_force = -damped_force * 0.7
+	torso.apply_force(torso_force, torso_offset)
+	torso.apply_torque(torso_offset.cross(torso_force))
 
-
-
+	# Apply to other limbs
+	for other in other_limbs:
+		var other_offset_pos = other.to_global(local_offset)
+		var other_offset = other_offset_pos - other.global_position
+		var other_force = -damped_force * 0.1
+		other.apply_force(other_force, other_offset)
+		other.apply_torque(other_offset.cross(other_force))
 
 func _spread_and_ball(push_away: bool) -> void:
 	var limbs = [left_hand, right_hand, left_foot, right_foot]
