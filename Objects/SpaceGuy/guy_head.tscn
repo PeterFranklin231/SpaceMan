@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://bp1bgmj48l0ih"]
+
+[ext_resource type="Texture2D" uid="uid://cooq6mu0apr37" path="res://Sprites/SpaceGuy/Head.png" id="1_i7fr6"]
+
+[node name="GuyHead" type="RigidBody2D"]
+collision_layer = 4
+collision_mask = 3
+mass = 0.2
+gravity_scale = 0.0
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+position = Vector2(0, -16)
+polygon = PackedVector2Array(4, -18, -4, -18, -9, -16, -13, -12, -15, -8, -15, 2, -13, 6, -10, 9, -5, 12, 5, 12, 9, 10, 13, 6, 15, 2, 15, -8, 13, -12, 9, -16)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -16)
+texture = ExtResource("1_i7fr6")

@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://d0dy0mbbgrbl"]
+
+[ext_resource type="Texture2D" uid="uid://dkg8fihfb2r2u" path="res://Sprites/basic tunnel segment.png" id="1_ychjb"]
+
+[node name="straight segment" type="RigidBody2D"]
+z_index = -1
+mass = 30.0
+gravity_scale = 0.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_ychjb")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-120, -33, -120, -53, -112, -60, 113, -60, 120, -52, 120, -33, 114, -33, 114, -36, 117, -36, 117, -50, 111, -57, -110, -57, -117, -51, -117, -36, -114, -36, -114, -33)
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-114, 33, -120, 33, -120, 53, -113, 60, 112, 60, 120, 53, 120, 33, 114, 33, 114, 36, 117, 36, 117, 51, 110, 57, -111, 57, -117, 51, -117, 36, -114, 36)

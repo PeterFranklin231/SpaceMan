@@ -1,0 +1,200 @@
+[gd_scene load_steps=11 format=3 uid="uid://basmxhlyemtvp"]
+
+[ext_resource type="Script" uid="uid://b0isb1ipfysa6" path="res://Scripts/guy.gd" id="1_20v6c"]
+[ext_resource type="PackedScene" uid="uid://2qigvjcoy7jt" path="res://Objects/SpaceGuy/guy_foot.tscn" id="1_ssoh8"]
+[ext_resource type="PackedScene" uid="uid://btnlj3dmoelhu" path="res://Objects/SpaceGuy/guy_limb_base.tscn" id="1_x81v5"]
+[ext_resource type="PackedScene" uid="uid://cyo1eu0ik2r0f" path="res://Objects/SpaceGuy/guy_hand.tscn" id="2_5dq20"]
+[ext_resource type="PackedScene" uid="uid://ckstjxuvavdt1" path="res://Objects/SpaceGuy/guy_torso.tscn" id="2_jihn4"]
+[ext_resource type="PackedScene" uid="uid://bp1bgmj48l0ih" path="res://Objects/SpaceGuy/guy_head.tscn" id="3_jihn4"]
+[ext_resource type="Script" uid="uid://da6pw8rcjey0g" path="res://Scripts/canvas_layer.gd" id="7_7aj7g"]
+[ext_resource type="Script" uid="uid://bmc4uhuju10a0" path="res://Scripts/camera_2d.gd" id="7_st52d"]
+[ext_resource type="PackedScene" uid="uid://d0dy0mbbgrbl" path="res://Objects/straight_segment.tscn" id="8_wcred"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5dq20"]
+size = Vector2(40, 40)
+
+[node name="Main1" type="Node2D"]
+
+[node name="Guy" type="Node2D" parent="."]
+position = Vector2(375, 289)
+script = ExtResource("1_20v6c")
+
+[node name="left foot" parent="Guy" instance=ExtResource("1_ssoh8")]
+position = Vector2(-11, 49)
+
+[node name="PinJoint2D" type="PinJoint2D" parent="Guy/left foot"]
+rotation = -0.00198658
+node_a = NodePath("../../left thigh")
+node_b = NodePath("..")
+softness = 4.0
+angular_limit_lower = -2.44346
+
+[node name="left thigh" parent="Guy" instance=ExtResource("1_x81v5")]
+position = Vector2(-11, 23)
+rotation = -0.000410384
+
+[node name="PinJoint2D" type="PinJoint2D" parent="Guy/left thigh"]
+node_a = NodePath("../../torso")
+node_b = NodePath("..")
+softness = 4.0
+
+[node name="right foot" parent="Guy" instance=ExtResource("1_ssoh8")]
+position = Vector2(11, 49)
+
+[node name="PinJoint2D" type="PinJoint2D" parent="Guy/right foot"]
+node_a = NodePath("../../right thigh")
+node_b = NodePath("..")
+softness = 4.0
+
+[node name="right thigh" parent="Guy" instance=ExtResource("1_x81v5")]
+position = Vector2(11, 23)
+
+[node name="PinJoint2D" type="PinJoint2D" parent="Guy/right thigh"]
+node_a = NodePath("../../torso")
+node_b = NodePath("..")
+softness = 4.0
+
+[node name="torso" parent="Guy" instance=ExtResource("2_jihn4")]
+position = Vector2(0, 1)
+mass = 1.6
+
+[node name="head" parent="Guy" instance=ExtResource("3_jihn4")]
+position = Vector2(0, -24)
+
+[node name="PinJoint2D" type="PinJoint2D" parent="Guy/head"]
+node_a = NodePath("../../torso")
+node_b = NodePath("..")
+disable_collision = false
+softness = 4.0
+
+[node name="left Uarm" parent="Guy" instance=ExtResource("1_x81v5")]
+position = Vector2(-14, -17)
+
+[node name="PinJoint2D" type="PinJoint2D" parent="Guy/left Uarm"]
+node_a = NodePath("../../torso")
+node_b = NodePath("..")
+softness = 4.0
+
+[node name="left hand" parent="Guy" instance=ExtResource("2_5dq20")]
+position = Vector2(-15, 6)
+
+[node name="PinJoint2D" type="PinJoint2D" parent="Guy/left hand"]
+node_a = NodePath("../../left Uarm")
+node_b = NodePath("..")
+softness = 4.0
+
+[node name="right Uarm" parent="Guy" instance=ExtResource("1_x81v5")]
+position = Vector2(15, -17)
+
+[node name="PinJoint2D" type="PinJoint2D" parent="Guy/right Uarm"]
+node_a = NodePath("../../torso")
+node_b = NodePath("..")
+softness = 4.0
+
+[node name="right hand" parent="Guy" instance=ExtResource("2_5dq20")]
+position = Vector2(15, 5)
+scale = Vector2(-1, 1)
+
+[node name="PinJoint2D" type="PinJoint2D" parent="Guy/right hand"]
+node_a = NodePath("../../right Uarm")
+node_b = NodePath("..")
+softness = 4.0
+
+[node name="Highlight Control" type="Node2D" parent="Guy" node_paths=PackedStringArray("left_hand", "right_hand", "left_foot", "right_foot")]
+z_index = 20
+script = ExtResource("7_7aj7g")
+left_hand = NodePath("../left hand")
+right_hand = NodePath("../right hand")
+left_foot = NodePath("../left foot")
+right_foot = NodePath("../right foot")
+
+[node name="RigidBody2D" type="RigidBody2D" parent="."]
+position = Vector2(356, 153)
+collision_mask = 15
+mass = 20.0
+gravity_scale = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
+position = Vector2(20, 20)
+shape = SubResource("RectangleShape2D_5dq20")
+
+[node name="ColorRect" type="ColorRect" parent="RigidBody2D"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="RigidBody2D2" type="RigidBody2D" parent="."]
+position = Vector2(306, 361)
+collision_mask = 15
+mass = 20.0
+gravity_scale = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D2"]
+position = Vector2(20, 20)
+shape = SubResource("RectangleShape2D_5dq20")
+
+[node name="ColorRect" type="ColorRect" parent="RigidBody2D2"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="RigidBody2D3" type="RigidBody2D" parent="."]
+position = Vector2(390, 394)
+collision_mask = 15
+mass = 20.0
+gravity_scale = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D3"]
+position = Vector2(20, 20)
+shape = SubResource("RectangleShape2D_5dq20")
+
+[node name="ColorRect" type="ColorRect" parent="RigidBody2D3"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="RigidBody2D4" type="RigidBody2D" parent="."]
+position = Vector2(296, 218)
+collision_mask = 15
+mass = 20.0
+gravity_scale = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D4"]
+position = Vector2(20, 20)
+shape = SubResource("RectangleShape2D_5dq20")
+
+[node name="ColorRect" type="ColorRect" parent="RigidBody2D4"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="RigidBody2D5" type="RigidBody2D" parent="."]
+position = Vector2(266, 293)
+collision_mask = 15
+gravity_scale = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D5"]
+position = Vector2(1.90735e-06, 1.90735e-06)
+scale = Vector2(0.2, 0.2)
+shape = SubResource("RectangleShape2D_5dq20")
+
+[node name="ColorRect" type="ColorRect" parent="RigidBody2D5"]
+offset_left = -4.0
+offset_top = -4.0
+offset_right = 36.0
+offset_bottom = 36.0
+scale = Vector2(0.2, 0.2)
+
+[node name="Camera2D" type="Camera2D" parent="." node_paths=PackedStringArray("target_body")]
+position = Vector2(440, 383)
+zoom = Vector2(2, 2)
+script = ExtResource("7_st52d")
+target_body = NodePath("../Guy/torso")
+
+[node name="straight segment" parent="." instance=ExtResource("8_wcred")]
+position = Vector2(526, 283)
+
+[node name="PinJoint2D" type="PinJoint2D" parent="straight segment"]
+position = Vector2(121, 0)
+node_a = NodePath("..")
+node_b = NodePath("../../straight segment2")
+disable_collision = false
+
+[node name="straight segment2" parent="." instance=ExtResource("8_wcred")]
+position = Vector2(768, 283)

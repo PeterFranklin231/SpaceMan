@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://ckstjxuvavdt1"]
+
+[ext_resource type="Texture2D" uid="uid://dfb1n23j4a2nn" path="res://Sprites/SpaceGuy/Torso.png" id="1_c5eqb"]
+
+[node name="GuyTorso" type="RigidBody2D"]
+collision_layer = 2
+collision_mask = 5
+gravity_scale = 0.0
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(13, -28, -12, -28, -17, -25, -20, -21, -18, 17, -4, 27, 3, 27, 18, 17, 20, -20, 17, -25)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_c5eqb")

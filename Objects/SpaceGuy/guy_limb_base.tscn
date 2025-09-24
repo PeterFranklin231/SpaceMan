@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://btnlj3dmoelhu"]
+
+[ext_resource type="Texture2D" uid="uid://bjtffi85udydt" path="res://Sprites/SpaceGuy/UpperLimb.png" id="1_i4m2w"]
+
+[node name="GuyLimbBase" type="RigidBody2D"]
+collision_layer = 0
+mass = 0.4
+gravity_scale = 0.0
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+position = Vector2(0, 8.8)
+polygon = PackedVector2Array(4, -18, -4, -18, -8, -16, -10, -12, -8, 14, -3, 18, 3, 18, 8, 14, 10, -12, 8, -16)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, 8.8)
+texture = ExtResource("1_i4m2w")
