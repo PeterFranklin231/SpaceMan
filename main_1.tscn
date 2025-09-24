@@ -20,7 +20,7 @@ position = Vector2(375, 289)
 script = ExtResource("1_20v6c")
 
 [node name="left foot" parent="Guy" instance=ExtResource("1_ssoh8")]
-position = Vector2(-11, 49)
+position = Vector2(-12, 50)
 
 [node name="PinJoint2D" type="PinJoint2D" parent="Guy/left foot"]
 rotation = -0.00198658
@@ -39,7 +39,7 @@ node_b = NodePath("..")
 softness = 4.0
 
 [node name="right foot" parent="Guy" instance=ExtResource("1_ssoh8")]
-position = Vector2(11, 49)
+position = Vector2(11, 50)
 
 [node name="PinJoint2D" type="PinJoint2D" parent="Guy/right foot"]
 node_a = NodePath("../../right thigh")
@@ -63,7 +63,6 @@ position = Vector2(0, 29)
 rotation = -0.000410384
 scale = Vector2(0.2, 0.2)
 collision_layer = 8
-collision_mask = 9
 mass = 0.01
 
 [node name="PinJoint2D" type="PinJoint2D" parent="Guy/Peenie"]
@@ -136,7 +135,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="RigidBody2D2" type="RigidBody2D" parent="."]
-position = Vector2(306, 361)
+position = Vector2(274, 350)
 collision_mask = 15
 mass = 20.0
 gravity_scale = 0.0
@@ -150,7 +149,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="RigidBody2D3" type="RigidBody2D" parent="."]
-position = Vector2(390, 394)
+position = Vector2(361, 393)
 collision_mask = 15
 mass = 20.0
 gravity_scale = 0.0
