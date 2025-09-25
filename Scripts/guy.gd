@@ -56,28 +56,18 @@ func _physics_process(delta: float) -> void:
 	queue_redraw()
 
 func _update_grab_states() -> void:
-	if Input.is_action_just_pressed("space"):
-		var grab_all = Input.is_action_pressed("w")
-		if grab_all or Input.is_action_pressed("q"):
-			left_hand.grabbing = true
-		if grab_all or Input.is_action_pressed("e"):
-			right_hand.grabbing = true
-		if grab_all or Input.is_action_pressed("a"):
-			left_foot.grabbing = true
-		if grab_all or Input.is_action_pressed("d"):
-			right_foot.grabbing = true
 
-	if Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+
+	if Input.is_action_just_pressed("right click"):
 		var release_all = Input.is_action_pressed("w")
 		if release_all or Input.is_action_pressed("q"):
-			left_hand.grabbing = false
+			left_hand.grabbing = !left_hand.grabbing
 		if release_all or Input.is_action_pressed("e"):
-			right_hand.grabbing = false
+			right_hand.grabbing = !right_hand.grabbing
 		if release_all or Input.is_action_pressed("a"):
-			left_foot.grabbing = false
+			left_foot.grabbing = !left_foot.grabbing
 		if release_all or Input.is_action_pressed("d"):
-			right_foot.grabbing = false
-
+			right_foot.grabbing = !right_foot.grabbing
 
 func _apply_paired_force(part: RigidBody2D, target_pos: Vector2) -> void:
 	var local_offset = Vector2(0, 18)
@@ -113,7 +103,6 @@ func _apply_paired_force(part: RigidBody2D, target_pos: Vector2) -> void:
 		var other_force = -damped_force * 0.1
 		other.apply_force(other_force, other_offset)
 		other.apply_torque(other_offset.cross(other_force))
-
 
 func _spread_and_ball(push_away: bool) -> void:
 	var limbs = [left_hand, right_hand, left_foot, right_foot]
