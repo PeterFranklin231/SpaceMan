@@ -121,7 +121,7 @@ right_foot = NodePath("../right foot")
 
 [node name="Camera2D" type="Camera2D" parent="." node_paths=PackedStringArray("target_body")]
 position = Vector2(440, 383)
-zoom = Vector2(2, 2)
+zoom = Vector2(4, 4)
 script = ExtResource("7_st52d")
 target_body = NodePath("../Guy/torso")
 
