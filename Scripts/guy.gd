@@ -45,19 +45,17 @@ func _physics_process(delta: float) -> void:
 	_apply_joint_angular_damping(left_thigh, left_foot, 15.0)
 	_apply_joint_angular_damping(right_thigh, right_foot, 15.0)
 
-	_enforce_angular_limit(torso, left_thigh, deg_to_rad(-10), deg_to_rad(120), 18000.0)
-	_enforce_angular_limit(torso, right_thigh, deg_to_rad(-120), deg_to_rad(10), 18000.0)
-	_enforce_angular_limit(left_thigh, left_foot, deg_to_rad(-145), deg_to_rad(0), 18000.0)
-	_enforce_angular_limit(right_thigh, right_foot, deg_to_rad(0), deg_to_rad(145), 18000.0)
-	_enforce_angular_limit(left_uarm, left_hand, deg_to_rad(-145), deg_to_rad(10), 18000.0)
-	_enforce_angular_limit(right_uarm, right_hand, deg_to_rad(0), deg_to_rad(145), 18000.0)
+	_enforce_angular_limit(torso, left_thigh, deg_to_rad(-10), deg_to_rad(120), 4800.0)
+	_enforce_angular_limit(torso, right_thigh, deg_to_rad(-120), deg_to_rad(10), 4800.0)
+	_enforce_angular_limit(left_thigh, left_foot, deg_to_rad(-145), deg_to_rad(0), 4800.0)
+	_enforce_angular_limit(right_thigh, right_foot, deg_to_rad(0), deg_to_rad(145), 4800.0)
+	_enforce_angular_limit(left_uarm, left_hand, deg_to_rad(-145), deg_to_rad(10), 4800.0)
+	_enforce_angular_limit(right_uarm, right_hand, deg_to_rad(0), deg_to_rad(145), 4800.0)
 
 
 	queue_redraw()
 
 func _update_grab_states() -> void:
-
-
 	if Input.is_action_just_pressed("right click"):
 		var release_all = Input.is_action_pressed("w")
 		if release_all or Input.is_action_pressed("q"):

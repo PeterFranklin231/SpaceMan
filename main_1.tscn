@@ -9,9 +9,7 @@
 [ext_resource type="Script" uid="uid://da6pw8rcjey0g" path="res://Scripts/canvas_layer.gd" id="7_7aj7g"]
 [ext_resource type="Script" uid="uid://bmc4uhuju10a0" path="res://Scripts/camera_2d.gd" id="7_st52d"]
 [ext_resource type="PackedScene" uid="uid://d0dy0mbbgrbl" path="res://Objects/straight_segment.tscn" id="8_wcred"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_5dq20"]
-size = Vector2(40, 40)
+[ext_resource type="PackedScene" uid="uid://byx6xlxfrp6el" path="res://Objects/chunk_sm.tscn" id="10_u21dm"]
 
 [node name="Main1" type="Node2D"]
 
@@ -20,7 +18,7 @@ position = Vector2(375, 289)
 script = ExtResource("1_20v6c")
 
 [node name="left foot" parent="Guy" instance=ExtResource("1_ssoh8")]
-position = Vector2(-11, 49)
+position = Vector2(-12, 50)
 
 [node name="PinJoint2D" type="PinJoint2D" parent="Guy/left foot"]
 rotation = -0.00198658
@@ -39,7 +37,7 @@ node_b = NodePath("..")
 softness = 4.0
 
 [node name="right foot" parent="Guy" instance=ExtResource("1_ssoh8")]
-position = Vector2(11, 49)
+position = Vector2(11, 50)
 
 [node name="PinJoint2D" type="PinJoint2D" parent="Guy/right foot"]
 node_a = NodePath("../../right thigh")
@@ -59,6 +57,7 @@ position = Vector2(0, 1)
 mass = 1.6
 
 [node name="Peenie" parent="Guy" instance=ExtResource("1_x81v5")]
+visible = false
 position = Vector2(0, 29)
 rotation = -0.000410384
 scale = Vector2(0.2, 0.2)
@@ -120,79 +119,6 @@ right_hand = NodePath("../right hand")
 left_foot = NodePath("../left foot")
 right_foot = NodePath("../right foot")
 
-[node name="RigidBody2D" type="RigidBody2D" parent="."]
-position = Vector2(356, 153)
-collision_mask = 15
-mass = 20.0
-gravity_scale = 0.0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
-position = Vector2(20, 20)
-shape = SubResource("RectangleShape2D_5dq20")
-
-[node name="ColorRect" type="ColorRect" parent="RigidBody2D"]
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="RigidBody2D2" type="RigidBody2D" parent="."]
-position = Vector2(306, 361)
-collision_mask = 15
-mass = 20.0
-gravity_scale = 0.0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D2"]
-position = Vector2(20, 20)
-shape = SubResource("RectangleShape2D_5dq20")
-
-[node name="ColorRect" type="ColorRect" parent="RigidBody2D2"]
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="RigidBody2D3" type="RigidBody2D" parent="."]
-position = Vector2(390, 394)
-collision_mask = 15
-mass = 20.0
-gravity_scale = 0.0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D3"]
-position = Vector2(20, 20)
-shape = SubResource("RectangleShape2D_5dq20")
-
-[node name="ColorRect" type="ColorRect" parent="RigidBody2D3"]
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="RigidBody2D4" type="RigidBody2D" parent="."]
-position = Vector2(296, 218)
-collision_mask = 15
-mass = 20.0
-gravity_scale = 0.0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D4"]
-position = Vector2(20, 20)
-shape = SubResource("RectangleShape2D_5dq20")
-
-[node name="ColorRect" type="ColorRect" parent="RigidBody2D4"]
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="RigidBody2D5" type="RigidBody2D" parent="."]
-position = Vector2(266, 293)
-collision_mask = 15
-gravity_scale = 0.0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D5"]
-position = Vector2(1.90735e-06, 1.90735e-06)
-scale = Vector2(0.2, 0.2)
-shape = SubResource("RectangleShape2D_5dq20")
-
-[node name="ColorRect" type="ColorRect" parent="RigidBody2D5"]
-offset_left = -4.0
-offset_top = -4.0
-offset_right = 36.0
-offset_bottom = 36.0
-scale = Vector2(0.2, 0.2)
-
 [node name="Camera2D" type="Camera2D" parent="." node_paths=PackedStringArray("target_body")]
 position = Vector2(440, 383)
 zoom = Vector2(4, 4)
@@ -200,7 +126,7 @@ script = ExtResource("7_st52d")
 target_body = NodePath("../Guy/torso")
 
 [node name="straight segment" parent="." instance=ExtResource("8_wcred")]
-position = Vector2(526, 283)
+position = Vector2(855, 283)
 mass = 300.0
 
 [node name="PinJoint2D" type="PinJoint2D" parent="straight segment"]
@@ -210,5 +136,47 @@ node_b = NodePath("../../straight segment2")
 disable_collision = false
 
 [node name="straight segment2" parent="." instance=ExtResource("8_wcred")]
-position = Vector2(768, 283)
+position = Vector2(1097, 283)
 mass = 300.0
+
+[node name="chunkSm" parent="." instance=ExtResource("10_u21dm")]
+position = Vector2(296, 192)
+scale = Vector2(1.58332, 1.58332)
+
+[node name="chunkSm2" parent="." instance=ExtResource("10_u21dm")]
+position = Vector2(469, 128)
+
+[node name="chunkSm3" parent="." instance=ExtResource("10_u21dm")]
+position = Vector2(485, 254)
+scale = Vector2(1.90369, 1.90369)
+
+[node name="chunkSm4" parent="." instance=ExtResource("10_u21dm")]
+position = Vector2(219, 309)
+scale = Vector2(0.744834, 0.744834)
+
+[node name="chunkSm5" parent="." instance=ExtResource("10_u21dm")]
+position = Vector2(439, 371)
+scale = Vector2(1.59817, 1.59817)
+
+[node name="chunkSm6" parent="." instance=ExtResource("10_u21dm")]
+position = Vector2(278, 454)
+scale = Vector2(1.81487, 1.81487)
+
+[node name="chunkSm7" parent="." instance=ExtResource("10_u21dm")]
+position = Vector2(604, 366)
+scale = Vector2(1.50544, 1.50544)
+
+[node name="chunkSm8" parent="." instance=ExtResource("10_u21dm")]
+position = Vector2(589, 197)
+
+[node name="chunkSm9" parent="." instance=ExtResource("10_u21dm")]
+position = Vector2(506, 499)
+
+[node name="chunkSm10" parent="." instance=ExtResource("10_u21dm")]
+position = Vector2(175, 180)
+
+[node name="chunkSm11" parent="." instance=ExtResource("10_u21dm")]
+position = Vector2(557, 307)
+
+[node name="chunkSm12" parent="." instance=ExtResource("10_u21dm")]
+position = Vector2(313, 350)
