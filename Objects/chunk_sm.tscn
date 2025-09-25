@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://byx6xlxfrp6el"]
+
+[ext_resource type="Texture2D" uid="uid://cti3eld4uc5y3" path="res://Sprites/chunkSm.png" id="1_204o0"]
+
+[node name="chunkSm" type="RigidBody2D"]
+mass = 55.0
+gravity_scale = 0.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_204o0")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-5, -21, 5, -20, 6, -17, 14, -16, 15, -11, 19, -11, 21, -2, 20, 3, 20, 11, 12, 16, 9, 21, -4, 21, -8, 19, -12, 18, -14, 15, -18, 13, -21, 6, -21, -1, -17, -5, -16, -12, -13, -13, -12, -17, -7, -18)
