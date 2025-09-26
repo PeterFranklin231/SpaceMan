@@ -44,18 +44,18 @@ func _physics_process(delta: float) -> void:
 	_update_grab_states()
 
 	# Joint Damping
-	_apply_joint_angular_damping(torso, left_thigh, 15.0)
-	_apply_joint_angular_damping(torso, right_thigh, 15.0)
-	_apply_joint_angular_damping(left_thigh, left_foot, 15.0)
-	_apply_joint_angular_damping(right_thigh, right_foot, 15.0)
+	#_apply_joint_angular_damping(torso, left_thigh, 15.0)
+	#_apply_joint_angular_damping(torso, right_thigh, 15.0)
+	#_apply_joint_angular_damping(left_thigh, left_foot, 15.0)
+	#_apply_joint_angular_damping(right_thigh, right_foot, 15.0)
 
 	# Angular Limits Enforcement
-	_enforce_angular_limit(torso, left_thigh, deg_to_rad(-10), deg_to_rad(120), 4800.0)
-	_enforce_angular_limit(torso, right_thigh, deg_to_rad(-120), deg_to_rad(10), 4800.0)
-	_enforce_angular_limit(left_thigh, left_foot, deg_to_rad(-145), deg_to_rad(0), 4800.0)
-	_enforce_angular_limit(right_thigh, right_foot, deg_to_rad(0), deg_to_rad(145), 4800.0)
-	_enforce_angular_limit(left_uarm, left_hand, deg_to_rad(-145), deg_to_rad(10), 4800.0)
-	_enforce_angular_limit(right_uarm, right_hand, deg_to_rad(0), deg_to_rad(145), 4800.0)
+	_enforce_angular_limit(torso, left_thigh, deg_to_rad(-10), deg_to_rad(110), 2000.0)
+	_enforce_angular_limit(torso, right_thigh, deg_to_rad(-110), deg_to_rad(10), 2000.0)
+	_enforce_angular_limit(left_thigh, left_foot, deg_to_rad(-135), deg_to_rad(0), 2000.0)
+	_enforce_angular_limit(right_thigh, right_foot, deg_to_rad(0), deg_to_rad(135), 2000.0)
+	_enforce_angular_limit(left_uarm, left_hand, deg_to_rad(-145), deg_to_rad(10), 1000.0)
+	_enforce_angular_limit(right_uarm, right_hand, deg_to_rad(0), deg_to_rad(145), 1000.0)
 
 	queue_redraw()
 
@@ -142,12 +142,52 @@ func _get_relative_angle(parent: RigidBody2D, child: RigidBody2D) -> float:
 
 func _enforce_angular_limit(parent: RigidBody2D, child: RigidBody2D, min_angle: float, max_angle: float, stiffness: float) -> void:
 	var rel_angle = wrapf(child.rotation - parent.rotation, -PI, PI)
-	if rel_angle < min_angle:
-		child.apply_torque(stiffness)
-		parent.apply_torque(-stiffness)
-	elif rel_angle > max_angle:
-		child.apply_torque(-stiffness)
-		parent.apply_torque(stiffness)
+	var ramp_range = deg_to_rad(5.0)
+	
+	# Determine the center of the 'unallowed' range
+	var unallowed_midpoint = 0.0
+	var unallowed_range_size = 0.0
+	
+	# Calculate the two unallowed sections
+	var range1_min = max_angle
+	var range1_max = wrapf(min_angle + 2 * PI, -PI, PI)
+	var range2_min = min_angle
+	var range2_max = wrapf(max_angle - 2 * PI, -PI, PI)
+
+	var in_unallowed_range = false
+	var error_angle = 0.0
+	var torque_direction = 0.0
+
+	# Check first unallowed range (clockwise from max_angle)
+	if rel_angle > range1_min or rel_angle < range1_max:
+		unallowed_range_size = wrapf(range1_max - range1_min, 0, 2 * PI)
+		unallowed_midpoint = wrapf(range1_min + unallowed_range_size / 2.0, -PI, PI)
+		in_unallowed_range = true
+		
+	# Check second unallowed range (counter-clockwise from min_angle)
+	elif rel_angle < range2_min or rel_angle > range2_max:
+		unallowed_range_size = wrapf(range2_min - range2_max, 0, 2 * PI)
+		unallowed_midpoint = wrapf(range2_min + unallowed_range_size / 2.0, -PI, PI)
+		in_unallowed_range = true
+		
+	if in_unallowed_range:
+		# Determine which way to push for the shortest path
+		var dist_to_min = abs(wrapf(rel_angle - min_angle, -PI, PI))
+		var dist_to_max = abs(wrapf(rel_angle - max_angle, -PI, PI))
+		
+		# Set error based on distance to nearest allowed limit
+		if dist_to_min < dist_to_max:
+			error_angle = dist_to_min
+			torque_direction = 1.0 # Push towards max
+		else:
+			error_angle = dist_to_max
+			torque_direction = -1.0 # Push towards min
+		
+		var ramp_factor = clamp(error_angle / ramp_range, 0.0, 1.0)
+		var ramped_stiffness = stiffness * ramp_factor
+		
+		child.apply_torque(ramped_stiffness * torque_direction)
+		parent.apply_torque(-ramped_stiffness * torque_direction)
 
 func _apply_joint_angular_damping(parent: RigidBody2D, child: RigidBody2D, damping_strength: float) -> void:
 	return
