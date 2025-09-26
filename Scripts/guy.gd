@@ -1,7 +1,8 @@
 extends Node2D
 
-@export var force_strength: float = 60.0
+@export var force_strength: float = 80.0
 
+# Body Part References
 @onready var torso := $torso
 @onready var left_foot := $"left foot"
 @onready var right_foot := $"right foot"
@@ -22,6 +23,7 @@ func _ready() -> void:
 	peenie.get_node("CollisionPolygon2D").position = Vector2(0,3)
 
 func _physics_process(delta: float) -> void:
+	# Input for 'reaching' with the mouse
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		var mouse_pos = get_global_mouse_position()
 		if Input.is_action_pressed("a"):
@@ -33,6 +35,7 @@ func _physics_process(delta: float) -> void:
 		if Input.is_action_pressed("e"):
 			_apply_paired_force(right_hand, mouse_pos)
 
+	# Input for 'spreading' or 'balling up'
 	if Input.is_action_pressed("w"):
 		_spread_and_ball(true)
 	if Input.is_action_pressed("s"):
@@ -40,18 +43,19 @@ func _physics_process(delta: float) -> void:
 
 	_update_grab_states()
 
+	# Joint Damping
 	_apply_joint_angular_damping(torso, left_thigh, 15.0)
 	_apply_joint_angular_damping(torso, right_thigh, 15.0)
 	_apply_joint_angular_damping(left_thigh, left_foot, 15.0)
 	_apply_joint_angular_damping(right_thigh, right_foot, 15.0)
 
+	# Angular Limits Enforcement
 	_enforce_angular_limit(torso, left_thigh, deg_to_rad(-10), deg_to_rad(120), 4800.0)
 	_enforce_angular_limit(torso, right_thigh, deg_to_rad(-120), deg_to_rad(10), 4800.0)
 	_enforce_angular_limit(left_thigh, left_foot, deg_to_rad(-145), deg_to_rad(0), 4800.0)
 	_enforce_angular_limit(right_thigh, right_foot, deg_to_rad(0), deg_to_rad(145), 4800.0)
 	_enforce_angular_limit(left_uarm, left_hand, deg_to_rad(-145), deg_to_rad(10), 4800.0)
 	_enforce_angular_limit(right_uarm, right_hand, deg_to_rad(0), deg_to_rad(145), 4800.0)
-
 
 	queue_redraw()
 
@@ -69,38 +73,48 @@ func _update_grab_states() -> void:
 
 func _apply_paired_force(part: RigidBody2D, target_pos: Vector2) -> void:
 	var local_offset = Vector2(0, 18)
-	var global_offset_pos = part.to_global(local_offset)
+	var global_offset_pos = part.to_global(local_offset) # The primary global point of application
 
+	# Calculate the base force and damping
 	var direction = (target_pos - global_offset_pos).normalized()
-	var force = direction * force_strength
+	var base_force = direction * force_strength
 
 	var speed = part.linear_velocity.length()
 	var damping_factor = clamp(1.0 - (speed / 200.0), 0.1, 1.0)
-	var damped_force = force * damping_factor
+	var damped_force = base_force * damping_factor
 
-	var offset = global_offset_pos - part.global_position
+	# 1. PRIMARY LIMB: Apply 100% force to the selected limb
+	var offset_on_part = global_offset_pos - part.global_position
+	part.apply_force(damped_force, offset_on_part)
+	part.apply_torque(offset_on_part.cross(damped_force))
 
-	# Apply force to the selected limb
-	part.apply_force(damped_force, offset)
-	part.apply_torque(offset.cross(damped_force))
+	# 1B. TORSO REACTION: Apply 100% opposite force to the torso
+	var torso_reaction_1_force = -damped_force
+	var offset_on_torso_1 = global_offset_pos - torso.global_position
+	
+	torso.apply_force(torso_reaction_1_force, offset_on_torso_1)
+	torso.apply_torque(offset_on_torso_1.cross(torso_reaction_1_force))
 
-	# Distribute reaction force
+	# 2. OTHER LIMBS: Apply 10% opposite force for counter-reach
 	var all_limbs = [left_hand, right_hand, left_foot, right_foot]
 	var other_limbs = all_limbs.filter(func(limb): return limb != part)
+	
+	# TORSO REACTION: Apply 10% of primary, in opposite direction
+	var other_limb_force = -damped_force * 0.1
 
-	# Apply to torso
-	var torso_offset = torso.to_global(local_offset) - torso.global_position
-	var torso_force = -damped_force * 0.7
-	torso.apply_force(torso_force, torso_offset)
-	torso.apply_torque(torso_offset.cross(torso_force))
-
-	# Apply to other limbs
 	for other in other_limbs:
-		var other_offset_pos = other.to_global(local_offset)
-		var other_offset = other_offset_pos - other.global_position
-		var other_force = -damped_force * 0.1
-		other.apply_force(other_force, other_offset)
-		other.apply_torque(other_offset.cross(other_force))
+		var other_limb_offset_pos = other.to_global(local_offset)
+		var offset_on_other = other_limb_offset_pos - other.global_position
+		
+		# Apply force to the other limb
+		other.apply_force(other_limb_force, offset_on_other)
+		other.apply_torque(offset_on_other.cross(other_limb_force))
+		#apply each reactive force
+		var torso_reaction_N_force = -other_limb_force 
+		var offset_on_torso_N = other_limb_offset_pos - torso.global_position
+		
+		torso.apply_force(torso_reaction_N_force, offset_on_torso_N)
+		torso.apply_torque(offset_on_torso_N.cross(torso_reaction_N_force))
 
 func _spread_and_ball(push_away: bool) -> void:
 	var limbs = [left_hand, right_hand, left_foot, right_foot]
@@ -136,6 +150,8 @@ func _enforce_angular_limit(parent: RigidBody2D, child: RigidBody2D, min_angle: 
 		parent.apply_torque(stiffness)
 
 func _apply_joint_angular_damping(parent: RigidBody2D, child: RigidBody2D, damping_strength: float) -> void:
+	return
+	# The original damping logic is commented out here by the 'return' for testing
 	var rel_ang_vel = child.angular_velocity - parent.angular_velocity
 	var damping_torque = -rel_ang_vel * damping_strength
 	child.apply_torque(damping_torque)

@@ -14,7 +14,6 @@ func _physics_process(delta: float) -> void:
 	else:
 		if grab_joint:
 			_release_grab()
-
 	_was_grabbing = grabbing
 
 func _try_grab() -> void:
@@ -26,7 +25,7 @@ func _try_grab() -> void:
 		if body == self or not body is RigidBody2D:
 			continue
 
-		var local_offset = Vector2(0, 18)  # 18 pixels down (adjust as needed)
+		var local_offset = Vector2(0, 18)  # 18 pixels down
 		var contact_point = to_global(local_offset)
 
 		# Create PinJoint2D at that offset position
